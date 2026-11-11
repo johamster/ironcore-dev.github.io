@@ -1,8 +1,9 @@
-import { withMermaid } from "vitepress-plugin-mermaid";
+import { defineConfig } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
+import { mermaidMarkdown } from './theme/utils/mermaid-markdown'
 
 // https://vitepress.dev/reference/site-config
-export default withMermaid({
+export default defineConfig({
   title: "IronCore Project",
   description: "IronCore Project - Cloud Native Infrastructure Management",
   base: '/',
@@ -24,8 +25,24 @@ export default withMermaid({
               new URL('./theme/components/VPFooter.vue', import.meta.url)
           )
         },
+        // Mermaid 12 transitive deps ship mixed UMD/ESM entry points.
+        { find: 'dayjs/plugin/advancedFormat.js', replacement: 'dayjs/esm/plugin/advancedFormat' },
+        { find: 'dayjs/plugin/customParseFormat.js', replacement: 'dayjs/esm/plugin/customParseFormat' },
+        { find: 'dayjs/plugin/isoWeek.js', replacement: 'dayjs/esm/plugin/isoWeek' },
+        { find: 'cytoscape/dist/cytoscape.umd.js', replacement: 'cytoscape/dist/cytoscape.esm.js' },
       ]
-    }
+    },
+    optimizeDeps: {
+      // Dev server only: pre-bundle mermaid's heavy transitive deps so the first
+      // page load doesn't trigger re-optimization mid-visit. No effect on `build`.
+      include: [
+        'mermaid',
+        'dayjs',
+        '@braintree/sanitize-url',
+        'cytoscape',
+        'cytoscape-cose-bilkent',
+      ],
+    },
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -218,5 +235,10 @@ export default withMermaid({
         link: 'https://join.slack.com/t/ironcore-dev/shared_invite/zt-3o0qo3j90-pbqV0io1B~Z~LqeAp4n2Vg'
       },
     ],
-  }
+  },
+  markdown: {
+    config: (md) => {
+      mermaidMarkdown(md)
+    },
+  },
 })

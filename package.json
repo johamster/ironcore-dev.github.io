@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "vitepress": "^1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.17"
+    "mermaid": "^12.3.0",
+    "vitepress": "^1.6.4"
   },
   "scripts": {
     "docs:dev": "node_modules/.bin/vitepress dev docs",
@@ -12,7 +12,6 @@
     "@plausible-analytics/tracker": "0.4.7"
   },
   "overrides": {
-    "mermaid": "~11.16.1",
     "esbuild": "^0.25.0",
     "katex": "^0.18.2"
   },
